@@ -34,7 +34,7 @@ class OrdersController < AdminController
 
   def notification
     @notification = Twocheckout::Ins.request({:credentials => {'sid' => 1817037, 'secret' => 'tango'}, :params => params})
-    @notification = JSON.parse(notification)
+    @notification = JSON.parse(@notification)
     @order = Order.find_by_order_number(params['sale_id'])
     if params['message_type'] == "FRAUD_STATUS_CHANGED"
       begin
