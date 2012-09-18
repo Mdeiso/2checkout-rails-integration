@@ -4,7 +4,7 @@ class AdminController < ApplicationController
   def authenticate
     authenticate_or_request_with_http_basic('Administration') do |username, password|
       session[:admin] = true
-      username == 'admin1' && password == 'password'
+      username == 'admin' && password == 'password'
     end
   end
 end
