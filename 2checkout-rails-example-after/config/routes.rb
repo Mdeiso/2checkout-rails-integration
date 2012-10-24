@@ -11,10 +11,8 @@ ExampleStore::Application.routes.draw do
 
   match '/return'=>'carts#return'
 
-  # match '/ins'=>'orders#twocheckout_ins'
   match '/notification' => 'orders#notification'
 
-  # match '/refund'=>'orders#refund'
   match 'orders/:id/refund' => 'orders#refund', :as => 'refund'
 
   root :to => 'categories#show', :id => 1

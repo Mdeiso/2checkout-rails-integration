@@ -30,11 +30,12 @@ class CartsController < ApplicationController
   end
 
   def return
-    @notification = Twocheckout::Return.request({:credentials => {'sid' => 1817037, 'secret' => 'tango'}, :params => params})
-    @notification = JSON.parse(@notification)
+    @notification = Twocheckout::ValidateResponse.purchase({:sid => 1817037, :secret => "tango", 
+      :order_number => params['order_number'], :total => params['total'], :key => params['key']})
+
     @cart = Cart.find(params['merchant_order_id'])
     begin
-      if @notification['code'] == "PASS"
+      if @notification[:code] == "PASS"
         @cart.status = 'success'
         @cart.purchased_at = Time.now
         @order = Order.create(:total => params['total'],
@@ -53,5 +54,4 @@ class CartsController < ApplicationController
       @cart.save
     end
   end
-
 end

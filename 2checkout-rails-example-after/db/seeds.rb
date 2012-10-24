@@ -4,5 +4,5 @@
 # Examples:
 #
 category = Category.create(name: 'Products')
-Product.create(name: 'Example Product 1', description: 'Example Product Description 1', price: 10.00, category_id: 1)
-Product.create(name: 'Example Product 2', description: 'Example Product Description 2', price: 20.00, category_id: 1)
+Product.create(name: 'Example Product 1', description: 'Example Product Description 1', price: 1.00, category_id: 1)
+Product.create(name: 'Example Product 2', description: 'Example Product Description 2', price: 2.00, category_id: 1)

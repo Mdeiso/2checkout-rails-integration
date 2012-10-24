@@ -33,5 +33,5 @@
     <% i+=1 %>
 <% end %>
 
-<% @form = Twocheckout::Charge.form(@params) %>
+<% @form = Twocheckout::Checkout.form(@params) %>
 <%= @form.html_safe %>

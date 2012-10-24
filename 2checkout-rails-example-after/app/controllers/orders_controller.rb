@@ -1,5 +1,4 @@
 class OrdersController < AdminController
-  skip_filter :authenticate, :only => [:notification]
 
   def index
     @orders = Order.all
@@ -33,8 +32,8 @@ class OrdersController < AdminController
   end
 
   def notification
-    @notification = Twocheckout::Ins.request({:credentials => {'sid' => 1817037, 'secret' => 'tango'}, :params => params})
-    @notification = JSON.parse(@notification)
+    @notification = Twocheckout::ValidateResponse.notification({:sale_id => params['sale_id'], :vendor_id => 1817037, 
+      :invoice_id => params['invoice_id'], :secret => "tango", :md5_hash => params['md5_hash']})
     @order = Order.find_by_order_number(params['sale_id'])
     if params['message_type'] == "FRAUD_STATUS_CHANGED"
       begin
@@ -53,17 +52,16 @@ class OrdersController < AdminController
 
   def refund
     @order = Order.find(params[:id])
-    Twocheckout.api_credentials=({'username' => 'APIuser1817037', 'password' => 'APIpass1817037'})
-    @response = Twocheckout::Sale.refund({'sale_id' => @order.order_number, 'comment' => "Item(s) not available", 'category' => 6})
-    @response = JSON.parse(@response)
-    logger.info(@response)
-    if @response['response_code'] == "OK"
+    begin
+      Twocheckout::API.credentials = { :username => 'APIuser1817037', :password => 'APIpass1817037' }
+      @sale = Twocheckout::Sale.find(:sale_id => @order.order_number)
+      @response = @sale.refund!({:comment => "Item(s) not available", :category => 6})
       @order.status = "refunded"
       @order.save
-      flash[:notice] = @response['response_message']
+      flash[:notice] = @response[:response_message]
       redirect_to orders_path
-    else
-      flash[:notice] = @response['errors'][0]['message']
+    rescue Exception => e
+      flash[:notice] = e.message
       redirect_to orders_path
     end
   end
